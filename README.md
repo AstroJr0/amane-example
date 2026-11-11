@@ -5,9 +5,9 @@ A small but complete desktop shell built with [Amane](https://github.com/MystiaF
 It has:
 
 - a wallpaper on every monitor
-- a bar on every monitor, with a Linux menu button, workspaces, a clock, volume, network, bluetooth, notifications and battery
+- a bar on every monitor, with a Linux menu button, workspaces, a clock, tray icons, volume, network, bluetooth, notifications and battery
 - a start menu: sleep, lock, log out and shut down on the left, app search on the right
-- small panels for wifi, bluetooth and notifications
+- small panels for wifi, bluetooth, notifications and the menu of a tray icon
 - notification popups
 - a lock screen
 
@@ -31,6 +31,7 @@ Amane writes its own `Cargo.toml` here on the first build, with paths from your 
 ### Before you start
 
 - Stop your notification daemon (mako, dunst, swaync), or the popups stay empty. Only one program can show notifications at a time.
+- Stop other trays (waybar's tray, snixembed), or programs register with them and the icons stay empty. Only one program can be the tray at a time.
 - Workspaces work on niri, Hyprland and Sway.
 - The wallpaper is `src/wallpaper-example/wallpaper_2.jpg`. To use your own, change `WALLPAPER` in `src/wallpaper.rs`, either to a path inside this project or to a full path. If the image is missing you get a plain dark background.
 - Read [Testing safely](https://mystiafin.github.io/amane/lock_screen.html#testing-safely) before trying the lock screen. A broken lock screen can lock you out of your session.
@@ -75,16 +76,24 @@ src/
 ├── main.rs            puts the windows together, and the ipc handlers
 ├── files.rs           finds files inside this project, wherever the shell was started
 ├── clock.rs           Clock service, shared by the bar and the lock screen
+├── tray.rs            Tray service: the icons programs ask the shell to show
+├── tray/
+│   ├── watcher.rs     the StatusNotifier watcher on the session bus
+│   ├── item.rs        one icon and what it says
+│   ├── menu.rs        an icon's menu, read and clicked over dbusmenu
+│   └── icon.rs        finds an icon's picture, or saves its pixels as one
 ├── bar.rs             the bar window: left, center and right
 ├── bar/
 │   ├── apps.rs        Linux button that opens the start menu
 │   ├── workspaces.rs  one button per workspace on this monitor
 │   ├── clock.rs       date and time
+│   ├── tray.rs        one button per tray icon
 │   └── status.rs      volume, network, bluetooth, notifications, battery
 ├── panel.rs           panel window, which panel is open, shared header and list item
 ├── panel/
 │   ├── wifi.rs        networks and the password box
 │   ├── bluetooth.rs   devices
+│   ├── tray.rs        the menu of one tray icon
 │   └── notifications.rs  every notification, and clear all
 ├── launcher.rs        start menu window, its state and search
 ├── launcher/
@@ -101,4 +110,4 @@ A good order to read them in: `main.rs`, `bar.rs`, then the files in `bar/`, the
 
 ## Credits
 
-The Linux icon is from [Simple Icons](https://simpleicons.org/) (CC0).
+The Linux(Tux) icon is from [Simple Icons](https://simpleicons.org/) (CC0).
