@@ -1,6 +1,7 @@
 mod apps;
 mod clock;
 mod status;
+mod tray;
 mod workspaces;
 
 use amane::{
@@ -22,7 +23,11 @@ pub fn view(monitor: &Monitor) -> LayerWindow {
         .gap(12.0)
         .align(Center);
 
-    let sections = Row::new(children![left, clock::view(), status::view()])
+    let right = Row::new(children![tray::view(), status::view()])
+        .gap(16.0)
+        .align(Center);
+
+    let sections = Row::new(children![left, clock::view(), right])
         .width(Parent)
         .height(Parent)
         .justify(SpaceBetween)
