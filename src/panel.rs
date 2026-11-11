@@ -1,5 +1,6 @@
 mod bluetooth;
 mod notifications;
+mod tray;
 mod wifi;
 
 use std::time::Duration;
@@ -15,6 +16,8 @@ pub enum Panel {
     Wifi,
     Bluetooth,
     Notifications,
+    // the menu of one tray item, by its id
+    Tray(u32),
 }
 
 // which panel is open, only one at a time
@@ -40,6 +43,7 @@ pub fn view() -> LayerWindow {
         Some(Panel::Wifi) => wifi::view(),
         Some(Panel::Bluetooth) => bluetooth::view(),
         Some(Panel::Notifications) => notifications::view(),
+        Some(Panel::Tray(id)) => tray::view(id),
         None => Column::new(Vec::new()),
     };
 
@@ -87,7 +91,7 @@ pub fn toggle(panel: Panel) {
     match panel {
         Panel::Wifi => Network::scan(),
         Panel::Bluetooth => Bluetooth::start_scan(),
-        Panel::Notifications => {}
+        Panel::Notifications | Panel::Tray(_) => {}
     }
 
     Panels::write().open = Some(panel);
