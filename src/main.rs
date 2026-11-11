@@ -5,6 +5,7 @@ mod launcher;
 mod lock_screen;
 mod notifications;
 mod panel;
+mod tray;
 mod wallpaper;
 
 use amane::{App, Lock};
